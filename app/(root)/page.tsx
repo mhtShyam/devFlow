@@ -2,6 +2,7 @@ import {Button} from "@/components/ui/button";
 import Link from "next/link";
 import ROUTES from "@/constants/routes";
 import LocalSearch from "@/components/search/LocalSearch";
+import HomeFilter from "@/components/filters/HomeFilter";
 
 const questions = [
     {
@@ -24,9 +25,9 @@ const questions = [
         title:"How to learn JavaScript?",
         description:"I want to learn JavaScript?",
         tags:[{
-            _id:"1",name:"React"
+            _id:"1",name:"JavaScript"
         },{
-            _id:"2",name:"JavaScript"
+            _id:"2",name:"React"
         }],
         author:{_id:"1", name:"John Doe"},
         upvotes:10,
@@ -41,8 +42,13 @@ interface SearchParams{
 }
 
 const Home = async({searchParams}:SearchParams) => {
-    const {query=""} = await searchParams;
-    const filterdQuestions = questions.filter((q)=> q.title.toLowerCase().includes(query.toLowerCase()))
+    const {query="", filter=""} = await searchParams;
+    const filterdQuestions = questions.filter((q)=> {
+        const matchesQuery = q.title.toLowerCase().includes(query.toLowerCase());
+        const matchesFilter = filter ? q.tags[0].name.toLowerCase() === filter.toLowerCase() : true;
+
+        return matchesQuery && matchesFilter;
+    })
     return (
        <>
            <section className="flex w-full flex-col-reverse justify-between gap-4 sm:flex-row sm:items-center">
@@ -54,7 +60,7 @@ const Home = async({searchParams}:SearchParams) => {
            <section className="mt-11">
                <LocalSearch route="/" imgSrc='/icons/search.svg' placeholder='Search...' otherClasses="flex-1"/>
            </section>
-           Home Filter
+           <HomeFilter/>
            <div className="mt-10 flex flex-col w-full gap-6">
                {filterdQuestions.map(question => (
                    <h1 key={question._id}>{question.title}</h1>
