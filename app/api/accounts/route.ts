@@ -2,7 +2,7 @@ import Account from "@/database/account.model";
 import handleError from "@/lib/handlers/error";
 import { ForbiddenError, NotFoundError } from "@/lib/http-errors";
 import dbConnect from "@/lib/mongoose";
-import { AccountSchema, AccountValidationSchema } from "@/lib/validations";
+import { AccountSchema} from "@/lib/validations";
 import { APIErrorResponse } from "@/types/global";
 import { NextResponse } from "next/server";
 
