@@ -1,6 +1,6 @@
 "use client"
 
-import { zodResolver } from "@hookform/resolvers/zod"
+import { zodResolver } from "@hookform/resolvers/zod";
 import { DefaultValues, FieldValues, Path, SubmitHandler, useForm } from "react-hook-form"
 import { z, ZodType } from "zod"
 
@@ -16,11 +16,14 @@ import {
 import { Input } from "@/components/ui/input"
 import Link from "next/link"
 import ROUTES from "@/constants/routes"
+import { ActionResponse } from "@/types/global";
+import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 interface AuthFormProps<T extends FieldValues> {
     schema: ZodType<T>;
     defaultValues: T;
-    onSubmit: (data: T) => Promise<{success:boolean}>;
+    onSubmit: (data: T) => Promise<ActionResponse>;
     formType: "SIGN_IN" | "SIGN_UP";
 }
 
@@ -31,14 +34,25 @@ const AuthForm = <T extends FieldValues>({
         onSubmit,
       }: AuthFormProps<T>) => {
  
+  const router = useRouter();      
   const form = useForm<z.infer<typeof schema>>({
     resolver: zodResolver(schema),
     defaultValues: defaultValues as DefaultValues<T>,
   });
 
-  const handleSubmit : SubmitHandler<T>=async()=>{
-    // TODO:authenticat user
-    console.log(onSubmit)
+  const handleSubmit : SubmitHandler<T>=async(data)=>{
+    const result = (await onSubmit(data)) as ActionResponse;
+    if(result?.success){
+      toast("Success", {
+        description: formType == "SIGN_IN" ? "Signed in successfully" : "Signed up successfully",
+      
+      });
+      router.push(ROUTES.HOME)
+    }else {
+      toast(`Error ${result?.status}`,{
+        description: result?.errors?.message || "An error occurred",
+      })
+    }
   }
 
   const buttonText = formType == "SIGN_IN" ? "Sign In" :"Sign Up"
@@ -64,7 +78,7 @@ const AuthForm = <T extends FieldValues>({
         ))}
        
         <Button disabled={form.formState.isSubmitted} className="primary-gradient paragraph-medium min-h-12 w-full px-4 py-3 font-inter text-light-900">{form.formState.isSubmitting ? buttonText == "Sign In" ? "Sign In...":"Sign Up...": buttonText}</Button>
-        {formType == "SIGN_IN" ? <p>Don't have an account?{" "}<Link className="paragraph-semibold primary-text-gradient" href={ROUTES.SIGN_UP}>Sign up</Link></p>:<p>Already have an account?{" "}<Link className="paragraph-semibold primary-text-gradient" href={ROUTES.SIGN_IN}>Sign in</Link></p>}
+        {formType == "SIGN_IN" ? <p>Don`&lsquo;t have an account?{" "}<Link className="paragraph-semibold primary-text-gradient" href={ROUTES.SIGN_UP}>Sign up</Link></p>:<p>Already have an account?{" "}<Link className="paragraph-semibold primary-text-gradient" href={ROUTES.SIGN_IN}>Sign in</Link></p>}
       </form>
     </Form>
   )

@@ -61,7 +61,7 @@ export const UserSchema = z.object({
   username:z.string().min(3,{message:"Username must be atleast 3 characters."}),
   email:z.string().email({message:"Please enter valid email."}),
   bio:z.string().optional(),
-  image:z.string().url({message:"Please provide valid image url"}).optional(),
+  image:z.url("Invalid Image Url").optional(),
   location:z.string().optional(),
   portfolio:z.string().url({message:"Please provide a valid URL"}).optional(),
   reputation:z.number().optional(),
@@ -70,9 +70,9 @@ export const UserSchema = z.object({
 
 
 export const AccountSchema = z.object({
-    userId: z.string().min(1, "User Id is required"), // Matches MongoDB ObjectId format
+    userId: z.string().min(1, "User Id is required"),
     name: z.string().min(1, "Name is required"),
-    image: z.string().url().optional(),
+    image: z.url("Invalid Image Url").optional(),
     password: z
     .string()
     .min(6,  "Password must be at least 6 characters long.")
@@ -97,7 +97,7 @@ export const SignInWithOAuthSchema = z.object({
   user: z.object({
     name: z.string().min(1, "Name is required"),
     username: z.string().min(3, "Username must be at least 3 characters"),
-    email: z.string().email("Invalid email address"),
-    image: z.string().url("Invalid image URL").optional(),
+    email: z.email("Invalid email address"),
+    image: z.url("Invalid Url").optional(),
   }),
 });
