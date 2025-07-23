@@ -7,9 +7,9 @@ import Image from 'next/image'
 import { cn } from '@/lib/utils'
 import { SheetClose } from '@/components/ui/sheet'
 
-const NavLinks = ({isMobileNav=false}:{isMobileNav?:boolean}) => {
+const NavLinks = ({ userId, isMobileNav=false}:{userId?:string, isMobileNav?:boolean}) => {
     const pathname = usePathname()
-    const userId = 1;
+
   return <>{sidebarLinks.map((item)=>{
     const isActive = (pathname.includes(item.route) && item.route.length > 1) || pathname === item.route;
 

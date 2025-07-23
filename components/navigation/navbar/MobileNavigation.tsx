@@ -11,8 +11,12 @@ import Link from 'next/link'
 import ROUTES from '@/constants/routes'
 import { Button } from '@/components/ui/button'
 import NavLinks from './NavLinks'
+import { auth, signOut } from '@/auth'
+import { LogOut } from 'lucide-react'
 
-const MobileNavigation = () => {
+const MobileNavigation = async() => {
+    const session = await auth();
+    const userId = session?.user?.id;
   return (
     <Sheet>
         <SheetTrigger asChild>
@@ -33,6 +37,21 @@ const MobileNavigation = () => {
                     </section>
                 </SheetClose>
                 <div className='flex flex-col gap-3'>
+                    {userId ?(
+                        <SheetClose asChild>
+                            <form action={
+                                async ()=>{
+                                    'use server'
+                                    await signOut()
+                                }
+                            }>
+                               <Button type='submit' className='base-medium w-fit !bg-transparent px-4 py-3 cursor-pointer'>
+                                    <LogOut className='size-5 text-black dark:text-white'/>
+                                    <span className='text-dark300_light900'>Logout</span>
+                                </Button>
+                            </form>
+                        </SheetClose>
+                    ):(<>
                     <SheetClose asChild>
                         <Link href={ROUTES.SIGN_IN}>
                             <Button className='small-medium btn-secondary min-h-[41px] w-full rounded-lg px-4 py-3 shadow-none'><span className='primary-text-gradient'>Log in</span></Button>
@@ -43,6 +62,7 @@ const MobileNavigation = () => {
                             <Button className='small-medium light-border-2 btn-tertiary text-dark400_light900 min-h-[41px] w-full rounded-lg border px-4 py-3 shadow-none'>Sign up</Button>
                         </Link> 
                     </SheetClose>
+                    </>)}
                 </div>
             </div>
         </SheetContent>
