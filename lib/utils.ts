@@ -8,7 +8,7 @@ export function cn(...inputs: ClassValue[]) {
 
 
 export const getDeviconClassName=(techName:string)=>{
-const normalizedTech =techName.replace(/[ .]/g,"").toLowerCase();
+const normalizedTech =techName?.replace(/[ .]/g,"").toLowerCase();
 return `${techMap[normalizedTech] || "devicon-devicon-plain"} colored`;
 }
 

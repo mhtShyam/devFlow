@@ -11,9 +11,10 @@ interface Author{
     image: string;
 }
 
-interface Question{
+interface IQuestion{
     _id:string;
     title:string;
+    content:string;
     tags:Tag[];
     author:Author;
     createdAt:Date;
@@ -37,3 +38,8 @@ type ErrorResponse = ActionResponse<undefined> & {success:false};
 
 type APIErrorResponse = NextResponse<ErrorResponse>;
 type APIResponse<T = null> = NextResponse<SuccessResponse<T> | ErrorResponse>
+
+interface RouteParams {
+    params: Record<string, string>;
+    searchParams: Record<string, string>;
+}
